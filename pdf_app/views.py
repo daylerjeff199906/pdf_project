@@ -1,16 +1,15 @@
 from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-import io
 
 def generate_pdf(request):
-    name = request.GET.get('name', 'Guest')
+    # Creamos un lienzo (canvas) PDF básico
+    buffer = HttpResponse(content_type='application/pdf')
+    buffer['Content-Disposition'] = 'attachment; filename="generated_pdf.pdf"'
 
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer, pagesize=letter)
-    p.drawString(100, 750, f"Certificado de asistencia para {name}")
+    # Creamos el PDF usando ReportLab
+    p = canvas.Canvas(buffer)
+    p.drawString(100, 100, "¡Hola, mundo!")
     p.showPage()
     p.save()
 
-    buffer.seek(0)
-    return HttpResponse(buffer, as_attachment=True, content_type='application/pdf')
+    return buffer
